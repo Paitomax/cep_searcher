@@ -9,7 +9,7 @@ abstract class RestClient {
   factory RestClient(Dio dio) = _RestClient;
 
   @GET("/cep/{cep}.json")
-  Future<List<CepResponse>> getCep();
+  Future<CepResponse> getCep(@Path() String cep);
 }
 
 @JsonSerializable()

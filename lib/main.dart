@@ -12,7 +12,7 @@ class FlutterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter View',
+      title: 'Buscador de endereço',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),

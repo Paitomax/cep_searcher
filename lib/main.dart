@@ -1,4 +1,4 @@
-import 'package:cep_searcher/cep_api.dart';
+import 'package:cep_searcher/providers/cep_api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,17 +29,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   final myController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    myController.dispose();
-  }
 
   void _requestCep() {
     if (myController.text == null || myController.text.isEmpty) {

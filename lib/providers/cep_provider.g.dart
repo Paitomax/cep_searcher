@@ -6,7 +6,7 @@ part of 'cep_provider.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-class _RestClient implements RestClient {
+class _RestClient implements CepProvider {
   _RestClient(this._dio) {
     ArgumentError.checkNotNull(_dio, '_dio');
   }

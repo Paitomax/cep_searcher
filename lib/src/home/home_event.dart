@@ -4,7 +4,7 @@ abstract class HomeEvent extends Equatable {
   const HomeEvent();
 }
 
-class SearchCepHomeEvent extends Equatable {
+class SearchCepHomeEvent extends HomeEvent {
   final String cep;
 
   SearchCepHomeEvent(this.cep);

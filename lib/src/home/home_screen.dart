@@ -1,7 +1,8 @@
-import 'package:cep_searcher/providers/cep_provider.dart';
+import 'package:cep_searcher/src/providers/cep_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,17 +10,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<HomeScreen> {
-  final myController = TextEditingController();
+  var _cepMaskFormatter = new MaskTextInputFormatter(
+      mask: '#####-###', filter: {"#": RegExp(r'[0-9]')});
 
   void _requestCep() {
-    if (myController.text == null || myController.text.isEmpty) {
+    if (_cepMaskFormatter.getMaskedText() == null ||
+        _cepMaskFormatter.getMaskedText().isEmpty) {
       return;
     }
     var dio = Dio();
     CepProvider api = CepProvider(dio);
-    var response = api.getCep(myController.text);
+    var response = api.getCep(_cepMaskFormatter.getMaskedText());
     response.then((it) {
-      if (it.status == 1) {
+      if (it.status == 200) {
         String msg;
         msg = "${it.state}\n${it.city}\n${it.district}\n${it.address}";
         _showDialog(msg, "Encontramos o Cep!");
@@ -38,31 +41,27 @@ class _MyHomePageState extends State<HomeScreen> {
       body: Container(
         margin: const EdgeInsets.only(left: 16.0, right: 16.0),
         child: Center(
-            child: new Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Container(
-                child: new Flexible(
-                    child: new TextField(
-              keyboardType: TextInputType.number,
-              controller: myController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Insira o Cep",
+          child: new Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Flexible(
+                child: new TextField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Insira o Cep",
+                  ),
+                  inputFormatters: [_cepMaskFormatter],
+                ),
               ),
-              inputFormatters: <TextInputFormatter>[
-                LengthLimitingTextInputFormatter(8),
-                WhitelistingTextInputFormatter.digitsOnly,
-                BlacklistingTextInputFormatter.singleLineFormatter,
-              ],
-            ))),
-            new RaisedButton(
-              onPressed: _requestCep,
-              child: const Text("Buscar endereço"),
-            )
-          ],
-        )),
+              new RaisedButton(
+                onPressed: _requestCep,
+                child: const Text("Buscar endereço"),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

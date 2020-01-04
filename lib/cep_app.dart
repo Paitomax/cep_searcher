@@ -1,4 +1,4 @@
-import 'package:cep_searcher/home/home_screen.dart';
+import 'package:cep_searcher/src/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class CepApp extends StatelessWidget {

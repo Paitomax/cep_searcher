@@ -1,3 +1,4 @@
+import 'package:cep_searcher/src/models/cep_response.dart';
 import 'package:cep_searcher/src/providers/cep_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,13 @@ class _MyHomePageState extends State<HomeScreen> {
           child: BlocConsumer<HomeBloc, HomeState>(
             listener: (BuildContext context, HomeState state) {
               if (state is LoadedHomeState) {
-                // vai pra tela de detalhe
+                //TODO criar tela de detalhe
+                // to com preguiça, então por enquanto vai ficar no dialog mesmo
+                CepResponse cep = state.cep;
+                String msg;
+                msg =
+                    "${cep.state}\n${cep.city}\n${cep.district}\n${cep.address}";
+                _showDialog(msg, "Encontramos o Cep!");
               } else if (state is ErrorHomeState) {
                 _showDialog("Deu ruim", "Vish");
               } else if (state is NotFoundHomeState) {

@@ -2,7 +2,10 @@ import 'package:cep_searcher/src/providers/cep_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+import 'bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,26 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<HomeScreen> {
+  TextEditingController _controller = TextEditingController();
   var _cepMaskFormatter = new MaskTextInputFormatter(
       mask: '#####-###', filter: {"#": RegExp(r'[0-9]')});
 
   void _requestCep() {
-    if (_cepMaskFormatter.getMaskedText() == null ||
-        _cepMaskFormatter.getMaskedText().isEmpty) {
-      return;
-    }
-    var dio = Dio();
-    CepProvider api = CepProvider(dio);
-    var response = api.getCep(_cepMaskFormatter.getMaskedText());
-    response.then((it) {
-      if (it.status == 200) {
-        String msg;
-        msg = "${it.state}\n${it.city}\n${it.district}\n${it.address}";
-        _showDialog(msg, "Encontramos o Cep!");
-      } else {
-        _showDialog("Cep não encontrado.", "Ops");
-      }
-    }).catchError((Object obj) {});
+    String cep = _cepMaskFormatter.getMaskedText();
+    BlocProvider.of<HomeBloc>(context).add(SearchCepHomeEvent(cep));
   }
 
   @override
@@ -41,28 +31,59 @@ class _MyHomePageState extends State<HomeScreen> {
       body: Container(
         margin: const EdgeInsets.only(left: 16.0, right: 16.0),
         child: Center(
-          child: new Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Flexible(
-                child: new TextField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Insira o Cep",
-                  ),
-                  inputFormatters: [_cepMaskFormatter],
-                ),
-              ),
-              new RaisedButton(
-                onPressed: _requestCep,
-                child: const Text("Buscar endereço"),
-              )
-            ],
+          child: BlocConsumer<HomeBloc, HomeState>(
+            listener: (BuildContext context, HomeState state) {
+              if (state is LoadedHomeState) {
+                // vai pra tela de detalhe
+              } else if (state is ErrorHomeState) {
+                _showDialog("Deu ruim", "Vish");
+              } else if (state is NotFoundHomeState) {
+                _showDialog("Cep não encontrado", "Que pena :/");
+              } else if (state is InvalidHomeState) {
+                _showDialog("Se atente mais... hehehe", "Cep invalido");
+              }
+            },
+            builder: (BuildContext context, state) {
+              if (state is LoadingHomeState) {
+                return CircularProgressIndicator();
+              } else
+                return _buildInitialState();
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildInitialState() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _buildTextField(),
+        _buildButton(),
+      ],
+    );
+  }
+
+  Widget _buildTextField() {
+    return new Flexible(
+      child: new TextField(
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: "Insira o Cep",
+        ),
+        controller: _controller,
+        inputFormatters: [_cepMaskFormatter],
+      ),
+    );
+  }
+
+  Widget _buildButton() {
+    return RaisedButton(
+      onPressed: _requestCep,
+      child: const Text("Buscar endereço"),
     );
   }
 

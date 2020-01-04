@@ -41,3 +41,8 @@ class ErrorHomeState extends HomeState {
   @override
   List<Object> get props => [error];
 }
+
+class InvalidHomeState extends HomeState {
+  @override
+  List<Object> get props => [];
+}

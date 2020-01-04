@@ -17,14 +17,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     HomeEvent event,
   ) async* {
     if (event is SearchCepHomeEvent) {
-      String cep = (event as SearchCepHomeEvent).cep;
-      yield LoadingHomeState();
-      try {
-        CepResponse response =
-            await cepProvider.getCep(cep);
-        yield LoadedHomeState(response);
-      } catch (error) {
-        yield NotFoundHomeState(cep);
+      String cep = event.cep;
+      if (cep.length == 9) {
+        yield LoadingHomeState();
+        try {
+          CepResponse response = await cepProvider.getCep(cep);
+          if (response.status != 200)
+            yield NotFoundHomeState(cep);
+          else
+            yield LoadedHomeState(response);
+        } catch (error) {
+          yield ErrorHomeState(error);
+        }
+      } else {
+        yield InvalidHomeState();
       }
     }
   }

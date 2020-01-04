@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 import '../models/cep_response.dart';
 
-part 'cep_api.g.dart';
+part 'cep_provider.g.dart';
 
 @RestApi(baseUrl: "http://apps.widenet.com.br/busca-cep/api/")
 abstract class RestClient {

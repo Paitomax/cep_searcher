@@ -1,4 +1,4 @@
-import 'package:cep_searcher/providers/cep_api.dart';
+import 'package:cep_searcher/providers/cep_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

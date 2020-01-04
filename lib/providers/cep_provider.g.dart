@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'cep_api.dart';
+part of 'cep_provider.dart';
 
 // **************************************************************************
 // RetrofitGenerator

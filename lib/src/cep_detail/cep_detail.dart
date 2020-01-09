@@ -19,8 +19,10 @@ class _CepDetailScreenState extends State<CepDetailScreen> {
       appBar: AppBar(
         title: Text(this.widget.cep.code),
       ),
-      body: Center(
+      body: Container(
+        alignment: Alignment.center,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(this.widget.cep.state),
             Text(this.widget.cep.city),
